@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class game {
     static int money;
-    static int difficulty = -1;
+    static int difficulty = 3;
     static String name;
 
     static boolean numberChecker(int min, int max, int current) {
@@ -98,10 +98,24 @@ public class game {
             return 0;
         }
         if (difficulty == 3) {
-
+            if (Check.diff3StartCheck(hands)) {
+                System.out.println("Bot decided to play, so I take difference between small and big hand from his account");
+                bot.setMoney(bot.getMoney() - (bigHand - smallHand));
+                return 0;
+            }else{
+                System.out.println("Bot decided to pass, round is over.");
+                return -1;
+            }
         }
         if (difficulty == 4) {
-
+            if (Check.diff3StartCheck(hands)) {
+                System.out.println("Bot decided to play, so I take difference between small and big hand from his account");
+                bot.setMoney(bot.getMoney() - (bigHand - smallHand));
+                return 0;
+            }else{
+                System.out.println("Bot decided to pass, round is over.");
+                return -1;
+            }
         }
         return 0;
     }
@@ -134,22 +148,23 @@ public class game {
     }
 
 
-    static int botPlay(Bot bot, ArrayList<Card> hands, int bigHand, int smallHand) {
-        if (difficulty == 1 || difficulty == 2) {
+    static int botPlay(Bot bot, ArrayList<Card> hands, int bigHand, int smallHand, int difficulty1) {
+        if (difficulty1 == 1 || difficulty1 == 2) {
             System.out.println("Bot decided to play.");
             bot.setMoney(bot.getMoney() - (bigHand - smallHand));
             return 0;
         }
-        if (difficulty == 3) {
+        if (difficulty1 == 3) {
+            Check.diff3StartCheck(hands);
 
         }
-        if(difficulty==4){
+        if (difficulty1 == 4) {
 
         }
         return 0;
     }
 
-    static void playerPlays(){
+    static void playerPlays() {
 
     }
 }

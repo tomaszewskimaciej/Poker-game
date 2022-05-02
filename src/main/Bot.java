@@ -27,5 +27,6 @@ public  class  Bot {
         Level 4: Highest level possible atm. Analyses starting hand like level 2 bot and is able to analyse board cards and compare them to its cards.
         TODO Level 4: This one could be able to check its own cards and player's card and then calculate its chance to win, using math algorithm.
 
+        BOTS will never outbid during first round, even bot level4.
      */
 }
