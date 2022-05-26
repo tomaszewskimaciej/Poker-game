@@ -16,4 +16,13 @@ public class Player {
     public int getMoney() {
         return money;
     }
+
+    public boolean  canPlayerPay(int amount){
+        if(amount>money){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
 }

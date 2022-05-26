@@ -20,10 +20,12 @@ public class Main {
         First card always goes to bot, so index 0 and 2 will be bot's cards and indexes 1 and 3 will be player's cards.
         * */
 
-//        System.out.println(cardsDeck.size());
-//        System.out.println(cardsDeck);
-        ArrayList<Card> cardsDeck = new ArrayList<>(52);                        //creating array that is our "deck"
-        ArrayList<Card> handsCards = new ArrayList<>(4);                        //creating array that is responsible for our hands
+
+        //creating an array that is our "deck"
+        ArrayList<Card> cardsDeck = new ArrayList<>(52);
+        //creating an array that is responsible for our hands
+        ArrayList<Card> handsCards = new ArrayList<>(4);
+        //creating an array that holds board cards
         ArrayList<Card> boardCards = new ArrayList<>(5);
 
         boolean playing = true;
@@ -31,33 +33,58 @@ public class Main {
         //boolean to check whether the game is still on
 
         while (playing) {
-            boolean isRoundOver = false;
+            boolean round = true;
             game.putCardsInDeck(cardsDeck);
             game.shuffleDeck(cardsDeck);
             game.dealCards(cardsDeck, handsCards);
+            game.boardMoney = 0;
             //at this point we have  already  dealt cards to each player
+
             game.myHand(handsCards);
             System.out.println(handsCards.get(0));
             System.out.println(handsCards.get(2));
             game.afterDealing(whoHasBigHand, bigHand, smallHand, player, bot);
             if (game.difficulty == 1) {
-                System.out.println("You chose difficulty 1. These are bot's cards: ");
-                System.out.println(handsCards.get(0));
-                System.out.println(handsCards.get(2));
-                System.out.println("\n");
+                game.checkBotCards(handsCards);
             }
-
-            if (whoHasBigHand == 1) {                                                                                    //bighand == 1 means you have bighand and it's bot's turn
-                if(game.botSmallHand(bot, handsCards, game.difficulty, bigHand, smallHand)==0){
-                    System.out.println("okej");
-                }else{
+            //bighand == 1 means you have bighand and it's bot's turn
+            if (whoHasBigHand == 1) {
+                if (game.botSmallHand(bot, handsCards, bigHand, smallHand) == 0) {
+                    System.out.println("Both players paid big hand amount.");
+                    System.out.println("It's time to put 3 cards on board.");
+                } else {
+                    player.setMoney(player.getMoney() + game.boardMoney);
+                    game.boardMoney = 0;
+                    round = false;
+                }
+                //bighand == 2 means you have small hand and it's your turn
+            } else {
+                //it returns values, -1 means player passed and round is over, 0 means he paid the difference
+                if (game.playerSmallHand(player, bigHand, smallHand) == 0) {
+                    System.out.println("Both players paid big hand amount.");
+                    System.out.println("It's time to put 3 cards on board.");
+                } else {
+                    bot.setMoney(bot.getMoney() + game.boardMoney);
+                    game.boardMoney = 0;
+                    round = false;
+                }
+            }
+            if (round) {
+                game.round2(boardCards, cardsDeck);
+                int playerDecision = game.round2Play(player);
+                if (playerDecision == 0) {
+                    int decision = game.round2PlayerChecks(bot);
+                    if (decision != 0) {
+                        if (!game.round2BotOutbidded(player, bot, decision)) {
+                            round = false;
+                            bot.setMoney(bot.getMoney() + game.boardMoney);
+                            game.boardMoney = 0;
+                        }
+                    }
+                } else {
 
                 }
 
-                whoHasBigHand = 2;
-            } else {                                                                          //bighand == 2 means you have small hand and it's your turn
-                game.playerSmallHand(player, handsCards, bigHand, smallHand);                 //it returns values, -1 means player passed and round is over, 0 means he paid the difference, 1 means he outbid
-                whoHasBigHand = 1;
             }
             playing = false;
         }
