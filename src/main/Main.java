@@ -112,6 +112,7 @@ public class Main {
             }
             // HERE THE THIRD ROUND IS OVER, 4 cards were put on board, both players checked, time for last card on a board.
             game.gameState(player, bot, handsCards, boardCards);
+            System.out.println("____________________________________________________________________________________________________");
         }
 
     }

@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class game {
     static int money;
-    static int difficulty = 1;
+    static int difficulty = 3;
     static String name;
     static int whoWon;
     static int boardMoney = 0;
@@ -256,7 +256,7 @@ public class game {
                     outbidAmount = player.getMoney();
                     boardMoney += outbidAmount;
                     playerHasNoEnoughMoney(player, bot, outbidAmount);
-                    allIn=true;
+                    allIn = true;
                     return outbidAmount;
                 }
         }
@@ -355,13 +355,13 @@ public class game {
                 bot.setMoney(bot.getMoney() - outbidAmount);
                 boardMoney += outbidAmount;
                 return true;
-            }else{
+            } else {
                 System.out.println("Outbid amount is greater than bot's account. Bot plays goes all in.");
                 outbidAmount = player.getMoney();
                 boardMoney += outbidAmount;
-                player.setMoney(0);
-                allIn=true;
-                return outbidAmount;
+                botHasNoEnoughMoney(player, bot, outbidAmount);
+                allIn = true;
+                return true;
             }
         }
         return true;
@@ -386,8 +386,10 @@ public class game {
                     return true;
                 } else {
                     System.out.println("\nYou don't have enough money to match that outbid. You are now all in, good luck");
+                    outbidAmount = player.getMoney();
                     boardMoney += player.getMoney();
                     playerHasNoEnoughMoney(player, bot, outbidAmount);
+                    allIn = true;
                     return true;
                 }
             case 2:
