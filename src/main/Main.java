@@ -8,7 +8,6 @@ public class Main {
 
     public static void main(String[] args) {
         game.money = 1000;
-        game.difficulty = 3;
         //game.startGame();
         // starts game, asks for name, money to play, bot difficulty etc.
         Bot bot = new Bot(game.money, game.difficulty, "Johny");                            //creating new bot with money set in startgame()
@@ -41,9 +40,8 @@ public class Main {
             //at this point we have  already  dealt cards to each player
 
             game.myHand(handsCards);
-            System.out.println(handsCards.get(0));
-            System.out.println(handsCards.get(2));
             game.afterDealing(whoHasBigHand, bigHand, smallHand, player, bot);
+
             if (game.difficulty == 1) {
                 game.checkBotCards(handsCards);
             }
@@ -69,6 +67,7 @@ public class Main {
                     round = false;
                 }
             }
+            game.gameState(player, bot, handsCards, boardCards);
             if (round) {
                 game.round2(boardCards, cardsDeck);
                 int playerDecision = game.round2Play(player);
@@ -79,12 +78,19 @@ public class Main {
                             round = false;
                             bot.setMoney(bot.getMoney() + game.boardMoney);
                             game.boardMoney = 0;
+                        } else {
+                            System.out.println("Both players checked, it's time for 4rd card.");
                         }
+                        //here both check so time for 4rd card on board
                     }
                 } else {
-
+                    round = game.round2PlayerOutbids(player, bot, playerDecision, handsCards);
                 }
-
+            }
+            // HERE THE SECOND ROUND IS OVER, 3 cards were put on board, both players checked, time for 4rd card on a board.
+            game.gameState(player, bot, handsCards, boardCards);
+            if(round){
+                game.round3(boardCards, cardsDeck);
             }
             playing = false;
         }
