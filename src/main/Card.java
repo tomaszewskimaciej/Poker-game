@@ -37,6 +37,6 @@ public class Card implements Comparable<Card>{
 
     @Override
     public int compareTo(Card o) {
-        return 0;
+        return this.rank-o.rank;
     }
 }
