@@ -49,8 +49,32 @@ public class Check {
     }
 
     int royalFlush(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
-        return 1;
+        boolean royalFlush = false;
+        //ace value is 12, we're going to use this integer to
+        int checker = 12;
+        int straightLength = 0;
+        ArrayList<Card> uniqueInArrayList = new ArrayList<>(checkUnique);
 
+        if (checkUnique.size() > 4) {
+            for (int a = uniqueInArrayList.size() - 1; a == 0; a--) {
+                if (uniqueInArrayList.get(a).getRank() == checker) {
+                    straightLength++;
+                    checker--;
+                } else {
+                    break;
+                }
+            }
+            if(straightLength>4){
+                royalFlush=true;
+                for (int a = uniqueInArrayList.size() - 1; a == 0; a--) {
+                    if(uniqueInArrayList.get(a).getSuit()==)
+                }
+            }
+        }
+        if (royalFlush) {
+            return 10;
+        }
+        return 0;
     }
 
     int straightFlush(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
@@ -61,8 +85,16 @@ public class Check {
     }
 
     int fourOfKind(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
-        if (checkIt.size() != checkUnique.size()) {
-            return 1;
+        if (checkUnique.size() < checkIt.size() - 2) {
+            for (int a = 1; a < checkIt.size() - 2; a++) {
+                if (checkIt.get(a).getRank() == checkIt.get(a - 1).getRank() && checkIt.get(a).getRank() == checkIt.get(a + 1).getRank()) {
+                    if (checkIt.get(a).getRank() == checkIt.get(a + 2).getRank()) {
+                        return 8;
+                    } else {
+                        a += 2;
+                    }
+                }
+            }
         }
         return 0;
     }
