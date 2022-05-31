@@ -62,6 +62,7 @@ public class Check {
     }
 
     int straightFlush(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
+        System.out.println("Yes");
         return 1;
 
     }
@@ -115,8 +116,6 @@ public class Check {
                     }
                 }
             }
-        } else {
-            return 0;
         }
         if(howManyPairs==2){
             return 3;
