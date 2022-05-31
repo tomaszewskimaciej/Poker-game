@@ -63,6 +63,7 @@ public class Check {
 
     int straightFlush(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
         System.out.println("Yes");
+        System.out.println("nonono");
         return 1;
 
     }
