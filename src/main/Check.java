@@ -1,7 +1,6 @@
 package main;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 
 public class Check {
     static boolean diff3StartCheck(ArrayList<Card> hands) {
@@ -46,14 +45,98 @@ public class Check {
         }
         //we sort it by ranks
         Collections.sort(checkIt);
+        TreeSet<Card> checkUnique = new TreeSet<>();
+        for (Card a : checkIt) {
+            checkUnique.add(a);
+        }
+
         // these 2 integers are used to tell how strong your hand is, 10 is the maximum value, it's royal flush, straight flush is 9, four of a kind is 8 etc.
         // pair is the lowest possible, it has value of 2, if both players return value of 2 then we compare for the highest card
         int current = 0, max = 0;
         return 1;
     }
 
-    int royalFlush(ArrayList<Card> checkIt){
+    int royalFlush(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
         return 1;
+
+    }
+
+    int straightFlush(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
+        return 1;
+
+    }
+
+    int fourOfKind(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
+        if (checkIt.size() != checkUnique.size()) {
+            return 1;
+        } else {
+            return 0;
+        }
+
+    }
+
+    int fullHouse(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
+        if (checkIt.size() != checkUnique.size()) {
+            return 1;
+        } else {
+            return 0;
+        }
+
+    }
+
+    int flush(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
+        return 1;
+
+    }
+
+    int straight(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
+        return 1;
+
+    }
+
+    int threeOfKind(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
+        if (checkIt.size()-2 == checkUnique.size()) {
+            return 1;
+        } else {
+            return 0;
+        }
+
+    }
+
+    int twoPair(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
+        //I'm aware that this method might mistake 3 same cards as a 2 pairs but it does not matter as it means that there's Three of a kind which is stronger
+        int howManyPairs = 0;
+        if (checkIt.size()-2 == checkUnique.size()) {
+            for (int a = 0; a < checkIt.size() - 1; a++) {
+                for (int b = a+1; b < checkIt.size(); b++) {
+                    if (checkIt.get(a).getRank() == checkIt.get(b).getRank()) {
+                        howManyPairs+=1;
+                        break;
+                    }
+                }
+            }
+        } else {
+            return 0;
+        }
+        if(howManyPairs==2){
+            return 3;
+        }
+        return 0;
+    }
+
+    int twoPairOrThreeOfAKind(ArrayList<Card> checkIt, TreeSet<Card> checkUnique){
+        if(checkIt.size()-1==checkUnique.size()){
+            for(int a = 0; a < checkIt.size()-1;a++){
+
+            }
+        }
+        return 0;
+    }
+    int pair(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
+        if(checkIt.size()==checkUnique.size()-1){
+            return 2;
+        }
+        return 0;
     }
 
 
