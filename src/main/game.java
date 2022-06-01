@@ -594,13 +594,13 @@ public class game {
             if (bot.getMoney() / 2 >= outbidAmount && bot.getMoney() / 3 < outbidAmount) {
                 if (Check.diff3StartCheck(hands)) {
                     System.out.println("Bot decided to outbid your bet.");
-                    if(bot.canBotPay(outbidAmount)){
+                    if (bot.canBotPay(outbidAmount)) {
                         bot.setMoney(bot.getMoney() - outbidAmount);
                         outbidAmount = bot.getMoney() / 5;
                         boardMoney += outbidAmount;
                         return outbidAmount;
-                    }else{
-                        botHasNoEnoughMoney(player,bot,outbidAmount);
+                    } else {
+                        botHasNoEnoughMoney(player, bot, outbidAmount);
                         return 0;
                     }
                 } else if (random >= 4) {
@@ -610,14 +610,14 @@ public class game {
             }
             if (bot.getMoney() / 3 >= outbidAmount && bot.getMoney() / 7 < outbidAmount) {
                 if (Check.diff3StartCheck(hands)) {
-                    if(bot.canBotPay(outbidAmount)){
+                    if (bot.canBotPay(outbidAmount)) {
                         System.out.println("Bot decided to outbid your bet.");
                         bot.setMoney(bot.getMoney() - outbidAmount);
                         outbidAmount = bot.getMoney() / 4;
                         boardMoney += outbidAmount;
                         return outbidAmount;
-                    }else{
-                        botHasNoEnoughMoney(player,bot,outbidAmount);
+                    } else {
+                        botHasNoEnoughMoney(player, bot, outbidAmount);
                         return 0;
                     }
                 } else if (random >= 6) {
@@ -627,14 +627,14 @@ public class game {
             }
             if (bot.getMoney() / 7 >= outbidAmount) {
                 if (Check.diff3StartCheck(hands)) {
-                    if(bot.canBotPay(outbidAmount)){
+                    if (bot.canBotPay(outbidAmount)) {
                         System.out.println("Bot decided to outbid your bet.");
                         bot.setMoney(bot.getMoney() - outbidAmount);
                         outbidAmount = bot.getMoney() / 3;
                         boardMoney += outbidAmount;
                         return outbidAmount;
-                    }else{
-                        botHasNoEnoughMoney(player,bot,outbidAmount);
+                    } else {
+                        botHasNoEnoughMoney(player, bot, outbidAmount);
                         return 0;
                     }
 
@@ -647,31 +647,58 @@ public class game {
         }
         if (difficulty == 4) {
             int check = Check.finalCheck(board, hands);
-            if (check < 6) {
-                if (bot.getMoney() / 2 < outbidAmount) {
+
+            if (check >= 9) {
+                if (bot.canBotPay(outbidAmount)) {
+                    System.out.println("Bot decided to outbid your bet. He goes allin.");
+                    bot.setMoney(bot.getMoney() - outbidAmount);
+                    outbidAmount = bot.getMoney();
+                    boardMoney += outbidAmount;
+                    allIn = true;
+                    return outbidAmount;
+                } else {
+                    botHasNoEnoughMoney(player, bot, outbidAmount);
+                    return 0;
+                }
+            }
+            if (check >= 7) {
+                if (bot.canBotPay(outbidAmount)) {
+                    System.out.println("Bot decided to outbid your bet.");
+                    bot.setMoney(bot.getMoney() - outbidAmount);
+                    outbidAmount = bot.getMoney()/2;
+                    boardMoney += outbidAmount;
+                    return outbidAmount;
+                } else {
+                    botHasNoEnoughMoney(player, bot, outbidAmount);
+                    return 0;
+                }
+            }
+
+
+            if (bot.getMoney() / 2 < outbidAmount) {
+                System.out.println("\nBot decided to pass, round is now over.");
+                return false;
+            }
+            if (bot.getMoney() / 2 >= outbidAmount && bot.getMoney() / 4 < outbidAmount) {
+                if (check <= 5) {
                     System.out.println("\nBot decided to pass, round is now over.");
                     return false;
                 }
-                if (bot.getMoney() / 2 >= outbidAmount && bot.getMoney() / 4 < outbidAmount) {
-                    if (check <= 5) {
-                        System.out.println("\nBot decided to pass, round is now over.");
-                        return false;
-                    }
+            }
+            if (bot.getMoney() / 4 >= outbidAmount && bot.getMoney() / 6 < outbidAmount) {
+                if (check <= 4) {
+                    System.out.println("\nBot decided to pass, round is now over.");
+                    return false;
                 }
-                if (bot.getMoney() / 4 >= outbidAmount && bot.getMoney() / 6 < outbidAmount) {
-                    if (check <= 4) {
-                        System.out.println("\nBot decided to pass, round is now over.");
-                        return false;
-                    }
-                }
-                if (bot.getMoney() / 5 >= outbidAmount && bot.getMoney() / 10 < outbidAmount) {
-                    if (random <= 3) {
-                        System.out.println("\nBot decided to pass, round is now over.");
-                        return false;
-                    }
+            }
+            if (bot.getMoney() / 5 >= outbidAmount && bot.getMoney() / 10 < outbidAmount) {
+                if (random <= 3) {
+                    System.out.println("\nBot decided to pass, round is now over.");
+                    return false;
                 }
             }
         }
+
 
         if (whatBotDoes == 1) {
             System.out.println("\nBot decided to check.");
