@@ -43,33 +43,65 @@ public class Check {
         }
         ArrayList<Card> uniqueCards = new ArrayList<>(checkUnique);
 
-        // these 2 integers are used to tell how strong your hand is, 10 is the maximum value, it's royal flush, straight flush is 9, four of a kind is 8 etc.
-        // pair is the lowest possible, it has value of 2, if both players return value of 2 then we compare for the highest card
-        int current = 0, max = 0;
+        int [] checkedValues = new int[9];
+        checkedValues[0]=royalFlush(checkIt,checkUnique);
+        checkedValues[1]=straightFlush(checkIt,checkUnique);
+        checkedValues[2]=fourOfKind(checkIt,checkUnique);
+        checkedValues[3]=fullHouse(checkIt,checkUnique);
+        checkedValues[4]=flush(checkIt);
+        checkedValues[5]=straight(checkIt,uniqueCards);
+        checkedValues[6]=threeOfKind(checkIt);
+        checkedValues[7]=twoPair(checkIt);
+        checkedValues[8]=pair(checkIt,checkUnique);
+        int max = Arrays.stream(checkedValues).max().getAsInt();
 
-        return current;
+        return max;
     }
 
-    int royalFlush(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
-        boolean royalFlush = false;
-        //ace value is 12, we're going to use this integer to
-        int checker = 12;
+//    static int checkAll(ArrayList<Card> checkIt, TreeSet<Card> checkUnique, ArrayList<Card> uniqueCards) {
+//        int [] checkedValues = new int[9];
+//        checkedValues[0]=royalFlush(checkIt,checkUnique);
+//        checkedValues[1]=straightFlush(checkIt,checkUnique);
+//        checkedValues[2]=fourOfKind(checkIt,checkUnique);
+//        checkedValues[3]=fullHouse(checkIt,checkUnique);
+//        checkedValues[4]=flush(checkIt);
+//        checkedValues[5]=straight(checkIt,uniqueCards);
+//        checkedValues[6]=threeOfKind(checkIt);
+//        checkedValues[7]=twoPair(checkIt);
+//        checkedValues[8]=pair(checkIt,checkUnique);
+//        int max = Arrays.stream(checkedValues).max().getAsInt();
+//        return max;
+//    }
+
+    static int royalFlush(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
         int straightLength = 0;
-
+        int tempRank = 0;
+        int tempSuit = 0;
         if (checkUnique.size() > 4) {
-            if (checkIt.get(checkIt.size() - 1).getRank() < 12) {
-                return 0;
-            } else {
-
+            for (int a = checkIt.size() - 1; a > 0; a--) {
+                if (checkIt.get(checkIt.size() - 1).getRank() == 12) {
+                    if (checkIt.get(a).getRank() == checkIt.get(a - 1).getRank()) {
+                        tempRank = checkIt.get(a).getRank();
+                        tempSuit = checkIt.get(a).getSuit();
+                    } else {
+                        if (checkIt.get(a).getRank() + -1 == checkIt.get(a - 1).getRank() && checkIt.get(a).getSuit() == checkIt.get(a - 1).getSuit() || tempRank == checkIt.get(a - 1).getRank() && tempSuit == checkIt.get(a - 1).getSuit()) {
+                            straightLength++;
+                            if (straightLength >= 4) {
+                                return 10;
+                            }
+                        } else {
+                            tempRank = 0;
+                            tempSuit = 0;
+                            straightLength = 0;
+                        }
+                    }
+                }
             }
-        }
-        if (royalFlush) {
-            return 10;
         }
         return 0;
     }
 
-    int straightFlush(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
+    static int straightFlush(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
         int straightLength = 0;
         int tempRank = 0;
         int tempSuit = 0;
@@ -95,7 +127,7 @@ public class Check {
         return 0;
     }
 
-    int fourOfKind(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
+    static int fourOfKind(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
         if (checkUnique.size() < checkIt.size() - 2) {
             for (int a = 1; a < checkIt.size() - 2; a++) {
                 if (checkIt.get(a).getRank() == checkIt.get(a - 1).getRank() && checkIt.get(a).getRank() == checkIt.get(a + 1).getRank()) {
@@ -110,7 +142,7 @@ public class Check {
         return 0;
     }
 
-    int fullHouse(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
+    static int fullHouse(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
         boolean pair = false;
         boolean three = false;
         boolean isThreeTrue = false;
@@ -137,7 +169,7 @@ public class Check {
         return 0;
     }
 
-    int flush(ArrayList<Card> checkIt) {
+    static int flush(ArrayList<Card> checkIt) {
         int diamonds = 0;
         int clubs = 0;
         int hearths = 0;
@@ -162,7 +194,7 @@ public class Check {
         return 0;
     }
 
-    int straight(ArrayList<Card> checkIt, ArrayList<Card> uniqueCards) {
+    static int straight(ArrayList<Card> checkIt, ArrayList<Card> uniqueCards) {
         int straightLength = 0;
         for (int a = 1; a < uniqueCards.size(); a++) {
             if (uniqueCards.get(a).getRank() == uniqueCards.get(a + 1).getRank() - 1) {
@@ -177,7 +209,7 @@ public class Check {
         return 0;
     }
 
-    int threeOfKind(ArrayList<Card> checkIt) {
+    static int threeOfKind(ArrayList<Card> checkIt) {
         for (int a = 1; a < checkIt.size() - 1; a++) {
             if (checkIt.get(a).getRank() == checkIt.get(a - 1).getRank() && checkIt.get(a).getRank() == checkIt.get(a + 1).getRank()) {
                 return 4;
@@ -186,7 +218,7 @@ public class Check {
         return 0;
     }
 
-    int twoPair(ArrayList<Card> checkIt) {
+    static int twoPair(ArrayList<Card> checkIt) {
         //I'm aware that this method might mistake 3 same cards as a 2 pairs but it does not matter as it means that there's Three of a kind which is way stronger
         int howManyPairs = 0;
         for (int a = 0; a < checkIt.size() - 1; a++) {
@@ -201,11 +233,11 @@ public class Check {
         return 0;
     }
 
-
-    int pair(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
+    static int pair(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
         if (checkIt.size() == checkUnique.size() + 1) {
             return 2;
         }
         return 0;
     }
+
 }
