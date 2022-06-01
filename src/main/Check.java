@@ -22,6 +22,7 @@ public class Check {
         if (hands.get(0).getSuit() == hands.get(2).getSuit()) {
             return true;
         }
+
         return false;
     }
 
