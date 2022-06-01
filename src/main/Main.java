@@ -32,6 +32,9 @@ public class Main {
         //boolean to check whether the game is still on
 
         while (playing) {
+            System.out.println("____________________________________________________________________________________________________");
+            System.out.println("____________________________________________________________________________________________________");
+            System.out.println("____________________________________________________________________________________________________");
             boolean round = true;
             game.allIn = false;
             game.putCardsInDeck(cardsDeck);
@@ -73,10 +76,10 @@ public class Main {
                 System.out.println("test_beggining of round 2");
                 System.out.println("____________________________________________________________________________________________________");
                 game.round2(boardCards, cardsDeck);
-                int playerDecision = game.roundPlay(player, bot);
+                int playerDecision = game.roundPlay(player, bot);                       //returns 0 if player checks, different value if player outbids
                 if (playerDecision == 0) {
-                    int decision = game.round2PlayerChecks(bot, handsCards, boardCards);
-                    if (decision != 0) {
+                    int decision = game.round2PlayerChecks(bot, handsCards, boardCards); //returns 0 if bots checks, different value if bot outbids
+                    if (decision != 0) {                                                //this is the only time bot can outbid you (after you checked), needs to be changed so bot can outbid even after you outbidded
                         if (!game.roundBotOutbidded(player, bot, decision)) {
                             round = false;
                             bot.setMoney(bot.getMoney() + game.boardMoney);
@@ -126,7 +129,33 @@ public class Main {
             }
             // HERE THE THIRD ROUND IS OVER, 4 cards were put on board, both players checked, time for last card on a board.
             game.gameState(player, bot, handsCards, boardCards);
-            System.out.println("test_round2finished");
+            System.out.println("test_round3finished");
+            System.out.println("____________________________________________________________________________________________________");
+            if (round) {
+                System.out.println("test_beggining of round 4");
+                System.out.println("____________________________________________________________________________________________________");
+                game.round4(boardCards, cardsDeck);                                                                      //beggining of round 4, cards on board and showing these cards
+                int playerDecision = game.roundPlay(player, bot);                                                        //player decides to checks or outbids
+                if (playerDecision == 0) {                                                                                  //if player checks here we go:
+                    int decision = game.round4PlayerChecks(bot, handsCards, boardCards);                                //bot needs to decide what to do, check or outbid
+                    if (decision != 0) {                                                                                    //if bot decided to outbid here we go:
+                        if (!game.roundBotOutbidded(player, bot, decision)) {                                             //if player decided to pass after bot outbided:
+                            round = false;
+                            bot.setMoney(bot.getMoney() + game.boardMoney);
+                            game.boardMoney = 0;
+                        } else {                                                                                         //if player decided to check after bot outbided:
+                            System.out.println("Both players checked, it's time for 4rd card.");
+                        }
+                    }
+                } else {                                                                                                  //if player outbided here we go:
+                    round = game.round4PlayerOutbids(player, bot, playerDecision, handsCards, boardCards);
+                    if (!round) {
+                        player.setMoney(player.getMoney() + game.boardMoney);
+                        game.boardMoney = 0;
+                    }
+                }
+            }
+            //HERE THE ROUND IS OVER, BOTH PLAYERS CHECKED TO THE FINAL STAGE, NONE PASSED, NOW WE NEED TO CHECK WHO WHINS
             System.out.println("____________________________________________________________________________________________________");
         }
 

@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class game {
     static int money;
-    static int difficulty = 3;
+    static int difficulty = 4;
     static String name;
     static int whoWon;
     static int boardMoney = 0;
@@ -181,14 +181,17 @@ public class game {
             }
         }
         if (difficulty == 4) {
+            int decide = rand.nextInt(10);
             if (Check.diff3StartCheck(hands)) {
                 System.out.println("Bot decided to play, so I take difference between small and big hand from his account.");
                 bot.setMoney(bot.getMoney() - (bigHand - smallHand));
                 boardMoney += smallHand;
                 return 0;
             } else {
-                System.out.println("Bot decided to pass, round is over.");
-                return -1;
+                if (decide > 7) {
+                    System.out.println("Bot decided to pass, round is over.");
+                    return -1;
+                }
             }
         }
         return 0;
@@ -249,7 +252,7 @@ public class game {
                 int outbidAmount = scan.nextInt();
                 if (player.canPlayerPay(outbidAmount)) {
                     player.setMoney(player.getMoney() - outbidAmount);
-                    boardMoney = -outbidAmount;
+                    boardMoney += outbidAmount;
                     return outbidAmount;
                 } else {
                     System.out.println("Outbid amount is greater than your account. You play for all in.");
@@ -267,7 +270,7 @@ public class game {
         Random rand = new Random();
         if (difficulty == 4) {
             int decide = rand.nextInt(10);
-            decide=Check.finalCheck(hands,board);
+            decide = Check.finalCheck(hands, board);
             if (decide >= 3) {
                 int outbidAmount = bot.getMoney() / 10;
                 System.out.println("\nBot decided to outbid, he outbids by: " + outbidAmount);
@@ -311,17 +314,11 @@ public class game {
                     return false;
                 }
             }
-            if (bot.getMoney() / 7 >= outbidAmount) {
-                if (random >= 8) {
-                    System.out.println("\nBot decided to pass, round is now over.");
-                    return false;
-                }
-            }
         }
         if (difficulty == 4) {
             if (!Check.diff3StartCheck(hands)) {
                 if (bot.getMoney() / 2 < outbidAmount) {
-                    if(Check.finalCheck(hands,board)<5){
+                    if (Check.finalCheck(hands, board) < 5) {
                         System.out.println("\nBot decided to pass, round is now over.");
                         return false;
                     }
@@ -340,12 +337,6 @@ public class game {
                 }
                 if (bot.getMoney() / 5 >= outbidAmount && bot.getMoney() / 10 < outbidAmount) {
                     if (random >= 5) {
-                        System.out.println("\nBot decided to pass, round is now over.");
-                        return false;
-                    }
-                }
-                if (bot.getMoney() / 10 >= outbidAmount) {
-                    if (random >= 7) {
                         System.out.println("\nBot decided to pass, round is now over.");
                         return false;
                     }
@@ -402,31 +393,39 @@ public class game {
         return true;
     }
 
-    //******************* HERE ROUND 2 IS OVER, TIME FOR ROUND 3(4RD CARD ON BOARD, ANOTHER BETTING TIME)**********************
+    //******************* HERE ROUND 2 IS OVER, TIME FOR ROUND 3(5th CARD ON BOARD, ANOTHER BETTING TIME)**********************
     static void round3(ArrayList<Card> board, ArrayList<Card> deck) {
         putCardsOnBoard(1, board, deck);
-        System.out.println("4rd card was put on board, cards on board are: ");
+        System.out.println("4th card was put on board, cards on board are: ");
         System.out.println(board.get(0) + ", " + board.get(1) + ", " + board.get(2) + ", " + board.get(3) + "\n");
     }
 
 
-    static int round3PlayerChecks(Bot bot,ArrayList<Card> hands, ArrayList<Card> board) {
+    static int round3PlayerChecks(Bot bot, ArrayList<Card> hands, ArrayList<Card> board) {
         int botDecision = 1;
         if (difficulty == 4) {
-            int decide = Check.finalCheck(hands,board);
+            int decide = Check.finalCheck(hands, board);
+            if(decide>=9){
+                int outbidAmount = bot.getMoney();
+                System.out.println("\n Bot decided to all in (" + bot.getMoney() +").");
+                bot.setMoney(0);
+                boardMoney+=outbidAmount;
+                allIn=true;
+                return outbidAmount;
+            }
             if (decide >= 4) {
-                int outbidAmount = bot.getMoney() / 8;
+                int outbidAmount = bot.getMoney() / 7;
                 System.out.println("\nBot decided to outbid, he outbids by: " + outbidAmount);
                 bot.setMoney(bot.getMoney() - outbidAmount);
                 boardMoney += outbidAmount;
                 return outbidAmount;
-            }else if(decide>=7){
-                int outbidAmount = bot.getMoney() / 5;
+            } else if (decide >= 7) {
+                int outbidAmount = bot.getMoney() / 4;
                 System.out.println("\nBot decided to outbid, he outbids by: " + outbidAmount);
                 bot.setMoney(bot.getMoney() - outbidAmount);
                 boardMoney += outbidAmount;
                 return outbidAmount;
-            }else {
+            } else {
                 System.out.println("\nBot also checks.");
                 return 0;
             }
@@ -436,7 +435,7 @@ public class game {
         }
     }
 
-
+    //difference between this method and round2playeroutbids is that this is the first time where level4 bot compares his and board cards to make a decision
     static boolean round3PlayerOutbids(Player player, Bot bot, int outbidAmount, ArrayList<Card> hands, ArrayList<Card> board) {
         int whatBotDoes = 1;
         Random rand = new Random();
@@ -472,55 +471,94 @@ public class game {
             }
         }
         if (difficulty == 4) {
-            if (!Check.diff3StartCheck(hands)) {
+            int check = Check.finalCheck(board, hands);
+            if (check < 6) {
                 if (bot.getMoney() / 2 < outbidAmount) {
-                    if(Check.finalCheck(hands,board)<5){
-                        System.out.println("\nBot decided to pass, round is now over.");
-                        return false;
-                    }
+                    System.out.println("\nBot decided to pass, round is now over.");
+                    return false;
                 }
                 if (bot.getMoney() / 2 >= outbidAmount && bot.getMoney() / 4 < outbidAmount) {
-                    if (random >= 3) {
+                    if (check <= 5) {
                         System.out.println("\nBot decided to pass, round is now over.");
                         return false;
                     }
                 }
                 if (bot.getMoney() / 4 >= outbidAmount && bot.getMoney() / 6 < outbidAmount) {
-                    if (random >= 4) {
+                    if (check <= 4) {
                         System.out.println("\nBot decided to pass, round is now over.");
                         return false;
                     }
                 }
                 if (bot.getMoney() / 5 >= outbidAmount && bot.getMoney() / 10 < outbidAmount) {
-                    if (random >= 5) {
-                        System.out.println("\nBot decided to pass, round is now over.");
-                        return false;
-                    }
-                }
-                if (bot.getMoney() / 10 >= outbidAmount) {
-                    if (random >= 7) {
+                    if (random <= 3) {
                         System.out.println("\nBot decided to pass, round is now over.");
                         return false;
                     }
                 }
             }
         }
+
         if (whatBotDoes == 1) {
             System.out.println("\nBot decided to check.");
             if (bot.canBotPay(outbidAmount)) {
                 bot.setMoney(bot.getMoney() - outbidAmount);
                 boardMoney += outbidAmount;
-                return true;
             } else {
                 System.out.println("Outbid amount is greater than bot's account. Bot plays goes all in.");
                 outbidAmount = player.getMoney();
                 boardMoney += outbidAmount;
                 botHasNoEnoughMoney(player, bot, outbidAmount);
                 allIn = true;
-                return true;
             }
+            return true;
         }
         return true;
     }
+
+
+    //******************* HERE ROUND 3 IS OVER, TIME FOR ROUND 4(5th CARD ON BOARD, ANOTHER BETTING TIME)**********************
+
+    static void round4(ArrayList<Card> board, ArrayList<Card> deck) {
+        putCardsOnBoard(1, board, deck);
+        System.out.println("5th card was put on board, cards on board are: ");
+        System.out.println(board.get(0) + ", " + board.get(1) + ", " + board.get(2) + ", " + board.get(3) + " " + board.get(4) + "\n");
+    }
+
+    static int round4PlayerChecks(Bot bot, ArrayList<Card> hands, ArrayList<Card> board) {
+        int botDecision = 1;
+        if (difficulty == 4) {
+            int decide = Check.finalCheck(hands, board);
+            if(decide>=9){
+                int outbidAmount = bot.getMoney();
+                System.out.println("\n Bot decided to all in (" + bot.getMoney() +").");
+                bot.setMoney(0);
+                boardMoney+=outbidAmount;
+                return outbidAmount;
+            }
+            if(decide<9 && decide >=7){
+
+            }
+            if (decide >= 4) {
+                int outbidAmount = bot.getMoney() / 8;
+                System.out.println("\nBot decided to outbid, he outbids by: " + outbidAmount);
+                bot.setMoney(bot.getMoney() - outbidAmount);
+                boardMoney += outbidAmount;
+                return outbidAmount;
+            } else if (decide >= 7) {
+                int outbidAmount = bot.getMoney() / 5;
+                System.out.println("\nBot decided to outbid, he outbids by: " + outbidAmount);
+                bot.setMoney(bot.getMoney() - outbidAmount);
+                boardMoney += outbidAmount;
+                return outbidAmount;
+            } else {
+                System.out.println("\nBot also checks.");
+                return 0;
+            }
+        } else {
+            System.out.println("\nBot also checks.");
+            return 0;
+        }
+    }
+
 
 }
