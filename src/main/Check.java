@@ -25,7 +25,7 @@ public class Check {
         return false;
     }
 
-    static int finalCheck(ArrayList<Card> hands, ArrayList<Card> board, int playerOrBot) {
+    static int finalCheck(ArrayList<Card> hands, ArrayList<Card> board) {
         ArrayList<Card> checkIt = new ArrayList<>();
         // so this is where we are checking player's/bot's hands
         // I'm creating 1 array, once we have 7 cards in 1 array we can check for flushes, fours, houses etc.

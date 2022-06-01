@@ -75,9 +75,9 @@ public class Main {
                 game.round2(boardCards, cardsDeck);
                 int playerDecision = game.roundPlay(player, bot);
                 if (playerDecision == 0) {
-                    int decision = game.round2PlayerChecks(bot);
+                    int decision = game.round2PlayerChecks(bot, handsCards, boardCards);
                     if (decision != 0) {
-                        if (!game.round2BotOutbidded(player, bot, decision)) {
+                        if (!game.roundBotOutbidded(player, bot, decision)) {
                             round = false;
                             bot.setMoney(bot.getMoney() + game.boardMoney);
                             game.boardMoney = 0;
@@ -87,7 +87,12 @@ public class Main {
                         //here both check so time for 4rd card on board
                     }
                 } else {
-                    round = game.round2PlayerOutbids(player, bot, playerDecision, handsCards);
+                    //if we here it means that player outbidded and bot needs to decide whether to check or pass
+                    round = game.round2PlayerOutbids(player, bot, playerDecision, handsCards, boardCards);
+                    if (!round) {
+                        player.setMoney(player.getMoney() + game.boardMoney);
+                        game.boardMoney = 0;
+                    }
                 }
             }
             // HERE THE SECOND ROUND IS OVER, 3 cards were put on board, both players checked, time for 4rd card on a board.
@@ -98,11 +103,11 @@ public class Main {
                 System.out.println("test_beggining of round 3");
                 System.out.println("____________________________________________________________________________________________________");
                 game.round3(boardCards, cardsDeck);
-                int playerDecision = game.roundPlay(player, bot);
+                int playerDecision = game.roundPlay(player, bot); //returns 0 if player checks, different value if player outbids
                 if (playerDecision == 0) {
-                    int decision = game.round3PlayerChecks(bot, boardCards);
+                    int decision = game.round3PlayerChecks(bot, handsCards, boardCards);    //returns 0 if bots checks, different value if bot outbids
                     if (decision != 0) {
-                        if (!game.round2BotOutbidded(player, bot, decision)) {
+                        if (!game.roundBotOutbidded(player, bot, decision)) {
                             round = false;
                             bot.setMoney(bot.getMoney() + game.boardMoney);
                             game.boardMoney = 0;
@@ -111,7 +116,12 @@ public class Main {
                         }
                     }
                 } else {
-
+                    //if we here it means that player outbidded and bot needs to decide whether to check or pass
+                    round = game.round3PlayerOutbids(player, bot, playerDecision, handsCards, boardCards);
+                    if (!round) {
+                        player.setMoney(player.getMoney() + game.boardMoney);
+                        game.boardMoney = 0;
+                    }
                 }
             }
             // HERE THE THIRD ROUND IS OVER, 4 cards were put on board, both players checked, time for last card on a board.
