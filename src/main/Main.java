@@ -33,7 +33,7 @@ public class Main {
 
         while (playing) {
             boolean round = true;
-            game.allIn=false;
+            game.allIn = false;
             game.putCardsInDeck(cardsDeck);
             game.shuffleDeck(cardsDeck);
             game.dealCards(cardsDeck, handsCards);
@@ -70,6 +70,8 @@ public class Main {
             }
             game.gameState(player, bot, handsCards, boardCards);
             if (round) {
+                System.out.println("test_beggining of round 2");
+                System.out.println("____________________________________________________________________________________________________");
                 game.round2(boardCards, cardsDeck);
                 int playerDecision = game.roundPlay(player, bot);
                 if (playerDecision == 0) {
@@ -91,10 +93,12 @@ public class Main {
             // HERE THE SECOND ROUND IS OVER, 3 cards were put on board, both players checked, time for 4rd card on a board.
             game.gameState(player, bot, handsCards, boardCards);
             System.out.println("test_round2finished");
+            System.out.println("____________________________________________________________________________________________________");
             if (round) {
+                System.out.println("test_beggining of round 3");
+                System.out.println("____________________________________________________________________________________________________");
                 game.round3(boardCards, cardsDeck);
                 int playerDecision = game.roundPlay(player, bot);
-                System.out.println("test_beggining of round 3");
                 if (playerDecision == 0) {
                     int decision = game.round3PlayerChecks(bot, boardCards);
                     if (decision != 0) {
@@ -112,6 +116,7 @@ public class Main {
             }
             // HERE THE THIRD ROUND IS OVER, 4 cards were put on board, both players checked, time for last card on a board.
             game.gameState(player, bot, handsCards, boardCards);
+            System.out.println("test_round2finished");
             System.out.println("____________________________________________________________________________________________________");
         }
 

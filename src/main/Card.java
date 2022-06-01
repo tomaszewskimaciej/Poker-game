@@ -18,8 +18,8 @@ public class Card implements Comparable<Card>{
     }
 
     public String toString() {
-        String[] ranks = { "Ace", "2", "3", "4", "5", "6",
-                "7", "8", "9", "10", "Jack", "Queen", "King"};
+        String[] ranks = { "2", "3", "4", "5", "6",
+                "7", "8", "9", "10", "Jack", "Queen", "King",  "Ace"};
         String[] suits = {"Clubs", "Diamonds", "Hearts", "Spades"};
         String s = ranks[this.rank] + " of " + suits[this.suit];
         return s;
@@ -37,6 +37,6 @@ public class Card implements Comparable<Card>{
 
     @Override
     public int compareTo(Card o) {
-        return 0;
+        return this.rank-o.rank;
     }
 }
