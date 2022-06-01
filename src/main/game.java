@@ -25,21 +25,6 @@ public class game {
         }
     }
 
-    //    static boolean playerAccountBalanceChecker(int amount, Player player) {
-//        if (amount > player.getMoney()) {
-//            return false;
-//        } else {
-//            return true;
-//        }
-//    }
-//
-//    static boolean botAccountBalanceChecker(int amount, Bot bot) {
-//        if (amount > bot.getMoney()) {
-//            return false;
-//        } else {
-//            return true;
-//        }
-//    }
     static void gameState(Player player, Bot bot, ArrayList<Card> hands, ArrayList<Card> board) {
         System.out.println("\n\nCurrent money on board is: " + boardMoney);
         System.out.println("Your balance: " + player.getMoney());
@@ -55,16 +40,37 @@ public class game {
         myHand(hands);
     }
 
-    static void playerHasNoEnoughMoney(Player player, Bot bot, int amount) {
-        int restOFmoney = amount - player.getMoney();
+//    static void playerHasNoEnoughMoney(Player player, Bot bot, int amount) {
+//        int restOFmoney = amount - player.getMoney();
+//        bot.setMoney(bot.getMoney() + restOFmoney);
+//        player.setMoney(0);
+//    }
+//
+//    static void botHasNoEnoughMoney(Player player, Bot bot, int amount) {
+//        int restOFmoney = amount - bot.getMoney();
+//        player.setMoney(player.getMoney() + restOFmoney);
+//        bot.setMoney(0);
+//
+//    }
+
+    static int playerHasNoEnoughMoney(Player player, Bot bot, int outbidAmount) {
+        System.out.println("Outbid amount is greater than player's account. Player plays goes all in.");
+        int restOFmoney = outbidAmount - player.getMoney();
+        boardMoney += player.getMoney();
         bot.setMoney(bot.getMoney() + restOFmoney);
         player.setMoney(0);
+        allIn = true;
+        return restOFmoney;
     }
 
-    static void botHasNoEnoughMoney(Player player, Bot bot, int amount) {
+    static int botHasNoEnoughMoney(Player player, Bot bot, int amount) {
+        System.out.println("Outbid amount is greater than bot's account. Bot plays goes all in.");
         int restOFmoney = amount - bot.getMoney();
+        boardMoney += bot.getMoney();
         player.setMoney(player.getMoney() + restOFmoney);
         bot.setMoney(0);
+        allIn = true;
+        return restOFmoney;
     }
 
 
@@ -255,12 +261,8 @@ public class game {
                     boardMoney += outbidAmount;
                     return outbidAmount;
                 } else {
-                    System.out.println("Outbid amount is greater than your account. You play for all in.");
-                    outbidAmount = player.getMoney();
-                    boardMoney += outbidAmount;
-                    playerHasNoEnoughMoney(player, bot, outbidAmount);
-                    allIn = true;
-                    return outbidAmount;
+                    int value = playerHasNoEnoughMoney(player, bot, outbidAmount);
+                    return value;
                 }
         }
         return 0;
@@ -350,11 +352,7 @@ public class game {
                 boardMoney += outbidAmount;
                 return true;
             } else {
-                System.out.println("Outbid amount is greater than bot's account. Bot plays goes all in.");
-                outbidAmount = player.getMoney();
-                boardMoney += outbidAmount;
                 botHasNoEnoughMoney(player, bot, outbidAmount);
-                allIn = true;
                 return true;
             }
         }
@@ -379,11 +377,7 @@ public class game {
                     boardMoney += outbidAmount;
                     return true;
                 } else {
-                    System.out.println("\nYou don't have enough money to match that outbid. You are now all in, good luck");
-                    outbidAmount = player.getMoney();
-                    boardMoney += player.getMoney();
                     playerHasNoEnoughMoney(player, bot, outbidAmount);
-                    allIn = true;
                     return true;
                 }
             case 2:
@@ -505,22 +499,15 @@ public class game {
                 }
             }
         }
-
-        if (whatBotDoes == 1) {
-            System.out.println("\nBot decided to check.");
-            if (bot.canBotPay(outbidAmount)) {
-                bot.setMoney(bot.getMoney() - outbidAmount);
-                boardMoney += outbidAmount;
-            } else {
-                System.out.println("Outbid amount is greater than bot's account. Bot plays goes all in.");
-                outbidAmount = player.getMoney();
-                boardMoney += outbidAmount;
-                botHasNoEnoughMoney(player, bot, outbidAmount);
-                allIn = true;
-            }
+        System.out.println("\nBot decided to check.");
+        if (bot.canBotPay(outbidAmount)) {
+            bot.setMoney(bot.getMoney() - outbidAmount);
+            boardMoney += outbidAmount;
+            return true;
+        } else {
+            botHasNoEnoughMoney(player, bot, outbidAmount);
             return true;
         }
-        return true;
     }
 
 
@@ -602,26 +589,59 @@ public class game {
                 if (!Check.diff3StartCheck(hands)) {
                     System.out.println("\nBot decided to pass, round is now over.");
                     return -1;
-                } else {
-
                 }
             }
             if (bot.getMoney() / 2 >= outbidAmount && bot.getMoney() / 3 < outbidAmount) {
-                if (random >= 4) {
+                if (Check.diff3StartCheck(hands)) {
+                    System.out.println("Bot decided to outbid your bet.");
+                    if(bot.canBotPay(outbidAmount)){
+                        bot.setMoney(bot.getMoney() - outbidAmount);
+                        outbidAmount = bot.getMoney() / 5;
+                        boardMoney += outbidAmount;
+                        return outbidAmount;
+                    }else{
+                        botHasNoEnoughMoney(player,bot,outbidAmount);
+                        return 0;
+                    }
+                } else if (random >= 4) {
                     System.out.println("\nBot decided to pass, round is now over.");
-                    return false;
+                    return -1;
                 }
             }
             if (bot.getMoney() / 3 >= outbidAmount && bot.getMoney() / 7 < outbidAmount) {
-                if (random >= 6) {
+                if (Check.diff3StartCheck(hands)) {
+                    if(bot.canBotPay(outbidAmount)){
+                        System.out.println("Bot decided to outbid your bet.");
+                        bot.setMoney(bot.getMoney() - outbidAmount);
+                        outbidAmount = bot.getMoney() / 4;
+                        boardMoney += outbidAmount;
+                        return outbidAmount;
+                    }else{
+                        botHasNoEnoughMoney(player,bot,outbidAmount);
+                        return 0;
+                    }
+                } else if (random >= 6) {
                     System.out.println("\nBot decided to pass, round is now over.");
-                    return false;
+                    return -1;
                 }
             }
             if (bot.getMoney() / 7 >= outbidAmount) {
+                if (Check.diff3StartCheck(hands)) {
+                    if(bot.canBotPay(outbidAmount)){
+                        System.out.println("Bot decided to outbid your bet.");
+                        bot.setMoney(bot.getMoney() - outbidAmount);
+                        outbidAmount = bot.getMoney() / 3;
+                        boardMoney += outbidAmount;
+                        return outbidAmount;
+                    }else{
+                        botHasNoEnoughMoney(player,bot,outbidAmount);
+                        return 0;
+                    }
+
+                }
                 if (random >= 8) {
                     System.out.println("\nBot decided to pass, round is now over.");
-                    return false;
+                    return -1;
                 }
             }
         }
@@ -659,11 +679,8 @@ public class game {
                 bot.setMoney(bot.getMoney() - outbidAmount);
                 boardMoney += outbidAmount;
             } else {
-                System.out.println("Outbid amount is greater than bot's account. Bot plays goes all in.");
-                outbidAmount = player.getMoney();
-                boardMoney += outbidAmount;
                 botHasNoEnoughMoney(player, bot, outbidAmount);
-                allIn = true;
+                return 0;
             }
             return true;
         }
