@@ -1,6 +1,7 @@
 package main;
 
 import java.util.*;
+import java.lang.*;
 
 public class Check {
     static boolean diff3StartCheck(ArrayList<Card> hands) {
@@ -44,35 +45,21 @@ public class Check {
         }
         ArrayList<Card> uniqueCards = new ArrayList<>(checkUnique);
 
-        int [] checkedValues = new int[9];
-        checkedValues[0]=royalFlush(checkIt,checkUnique);
-        checkedValues[1]=straightFlush(checkIt,checkUnique);
-        checkedValues[2]=fourOfKind(checkIt,checkUnique);
-        checkedValues[3]=fullHouse(checkIt,checkUnique);
-        checkedValues[4]=flush(checkIt);
-        checkedValues[5]=straight(checkIt,uniqueCards);
-        checkedValues[6]=threeOfKind(checkIt);
-        checkedValues[7]=twoPair(checkIt);
-        checkedValues[8]=pair(checkIt,checkUnique);
+        int[] checkedValues = new int[9];
+        checkedValues[0] = royalFlush(checkIt, checkUnique);
+        checkedValues[1] = straightFlush(checkIt, checkUnique);
+        checkedValues[2] = fourOfKind(checkIt, checkUnique);
+        checkedValues[3] = fullHouse(checkIt, checkUnique);
+        checkedValues[4] = flush(checkIt);
+        checkedValues[5] = straight(checkIt, uniqueCards);
+        checkedValues[6] = threeOfKind(checkIt);
+        checkedValues[7] = twoPair(checkIt);
+        checkedValues[8] = pair(checkIt, checkUnique);
         int max = Arrays.stream(checkedValues).max().getAsInt();
 
         return max;
     }
 
-//    static int checkAll(ArrayList<Card> checkIt, TreeSet<Card> checkUnique, ArrayList<Card> uniqueCards) {
-//        int [] checkedValues = new int[9];
-//        checkedValues[0]=royalFlush(checkIt,checkUnique);
-//        checkedValues[1]=straightFlush(checkIt,checkUnique);
-//        checkedValues[2]=fourOfKind(checkIt,checkUnique);
-//        checkedValues[3]=fullHouse(checkIt,checkUnique);
-//        checkedValues[4]=flush(checkIt);
-//        checkedValues[5]=straight(checkIt,uniqueCards);
-//        checkedValues[6]=threeOfKind(checkIt);
-//        checkedValues[7]=twoPair(checkIt);
-//        checkedValues[8]=pair(checkIt,checkUnique);
-//        int max = Arrays.stream(checkedValues).max().getAsInt();
-//        return max;
-//    }
 
     static int royalFlush(ArrayList<Card> checkIt, TreeSet<Card> checkUnique) {
         int straightLength = 0;
@@ -241,4 +228,19 @@ public class Check {
         return 0;
     }
 
+    static int equalHands(Player player, Bot bot, ArrayList<Card> hands) {
+        System.out.println("It looks like both players have equal hands.");
+        int botHand = Math.max(hands.get(0).getRank(), hands.get(2).getRank());
+        int playerHand = Math.max(hands.get(1).getRank(), hands.get(3).getRank());
+        if (botHand == playerHand) {
+            return 3;
+        }
+        if (botHand > playerHand) {
+            return 1;
+        }
+        if (botHand < playerHand) {
+            return 0;
+        }
+        return 1;
+    }
 }

@@ -1,5 +1,6 @@
 package main;
 
+import javax.swing.*;
 import java.security.spec.RSAOtherPrimeInfo;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,12 +20,12 @@ public class game {
      */
     static int boardMoney = 0;
     /**
-     *Tells whether either of players went all in.
+     * Tells whether either of players went all in.
      */
     static boolean allIn = false;
 
     /**
-     *this method is used to check whether number given by user is correct
+     * this method is used to check whether number given by user is correct
      */
     static boolean numberChecker(int min, int max, int current) {
         if (current < min || current > max) {
@@ -38,7 +39,7 @@ public class game {
     }
 
     /**
-     *this method is used to show game state, it shows both player balances and cards on board. It's used after each round.
+     * this method is used to show game state, it shows both player balances and cards on board. It's used after each round.
      */
     static void gameState(Player player, Bot bot, ArrayList<Card> hands, ArrayList<Card> board) {
         System.out.println("\n\nCurrent money on board is: " + boardMoney);
@@ -55,22 +56,12 @@ public class game {
         myHand(hands);
     }
 
-//    static void playerHasNoEnoughMoney(Player player, Bot bot, int amount) {
-//        int restOFmoney = amount - player.getMoney();
-//        bot.setMoney(bot.getMoney() + restOFmoney);
-//        player.setMoney(0);
-//    }
-//
-//    static void botHasNoEnoughMoney(Player player, Bot bot, int amount) {
-//        int restOFmoney = amount - bot.getMoney();
-//        player.setMoney(player.getMoney() + restOFmoney);
-//        bot.setMoney(0);
-//
-//    }
+
 
     /**
      * It's used when player has no money to make a bid/outbid of bot's is too big for player's salary.
      * It calculates how much money player can bet, makes all in bet for him, returns "extra" money to bot.
+     *
      * @return - returns how much money player bet
      */
     static int playerHasNoEnoughMoney(Player player, Bot bot, int outbidAmount) {
@@ -86,6 +77,7 @@ public class game {
     /**
      * It's used when bot has no money to make a bid/outbid of player's is too big for bot's salary.
      * It calculates how much money bot can bet, makes all in bet for him, returns "extra" money to player.
+     *
      * @return - returns how much money bot bet
      */
     static int botHasNoEnoughMoney(Player player, Bot bot, int amount) {
@@ -180,7 +172,7 @@ public class game {
     }
 
     /**
-     *Shows bot's cards. Avaiable only at difficulty 1.
+     * Shows bot's cards. Avaiable only at difficulty 1.
      */
     static void checkBotCards(ArrayList<Card> hands) {
         System.out.println("You chose difficulty 1. These are bot's cards: ");
@@ -193,8 +185,9 @@ public class game {
     /**
      * It's called right after dealing cards to players, at the beggining of round.
      * It takes big hand money from player/bot.
-     * @param order - it's int, if it's 1 then player has big hand, 0 mean bot has smallhand.
-     * @param bigHand - 10 % of starting money
+     *
+     * @param order     - it's int, if it's 1 then player has big hand, 0 mean bot has smallhand.
+     * @param bigHand   - 10 % of starting money
      * @param smallHand - 5 % of starting money
      */
     static void afterDealing(int order, int bigHand, int smallHand, Player player, Bot bot) {
@@ -214,6 +207,7 @@ public class game {
 
     /**
      * It's called when bot has small hand. Bot needs to decide whether to check (pay difference between big and small hand) or pass.
+     *
      * @return - 0 if bot checks, -1 if bot passes
      */
     static int botSmallHand(Bot bot, ArrayList<Card> hands, int bigHand, int smallHand) {
@@ -263,6 +257,7 @@ public class game {
 
     /**
      * It's called when player has small hand. Player needs to decide whether to check (pay difference between big and small hand) or pass.
+     *
      * @return - 0 if player checks, -1 if player passes
      */
     static int playerSmallHand(Player player, int bigHand, int smallHand) {
@@ -294,6 +289,7 @@ public class game {
     /**
      * It's called when either of players decided to pass.
      * It gives board money to winning player, set board money to 0 and change all in to false.
+     *
      * @param whoWon 0 if player won, 1 if bot won.
      */
     static void roundOver(Player player, Bot bot, int whoWon) {
@@ -305,9 +301,17 @@ public class game {
         }
         if (whoWon == 1) {
             System.out.println("Round is over, bot wins!");
-            bot.setMoney(bot.getMoney()+boardMoney);
+            bot.setMoney(bot.getMoney() + boardMoney);
             boardMoney = 0;
             allIn = false;
+        }
+        if(whoWon==3){
+            System.out.println("Both players combinations are equal, so are their strongest cards.");
+            System.out.println("This is very rare event but it's a draw");
+            player.setMoney(player.getMoney()+boardMoney/2);
+            bot.setMoney(bot.getMoney()+boardMoney/2);
+            boardMoney=0;
+            allIn=false;
         }
     }
 
@@ -324,6 +328,7 @@ public class game {
 
     /**
      * Player needs to decide what to do. He can either check or outbid.
+     *
      * @return 0 if player checks, positive number if player outbids (this number is equal to the amount of outbid).
      */
     static int roundPlay(Player player, Bot bot) {
@@ -358,6 +363,7 @@ public class game {
     /**
      * Bot needs to decide what to do after player checked.
      * Only bot level 4 might outbid. He might do this only if his hand have a pretty good (considering that it's an early stage of round) combination with board cards.
+     *
      * @return 0 if bot checks, positive number if bot outbids (this number is equal to the amount of outbid).
      */
     static int round2PlayerChecks(Bot bot, ArrayList<Card> hands, ArrayList<Card> board) {
@@ -386,6 +392,7 @@ public class game {
      * Bots level 1 and 2 will always check.
      * Bot level 3 decision depends on his starting hand and how big the outbid is.
      * Bot level 4 decision depends on: first his starting hand (as it's still an early stage of the round) and then of combination of his and board cards.
+     *
      * @return true if bot checks, false if bot passes.
      */
     static boolean round2PlayerOutbids(Player player, Bot bot, int outbidAmount, ArrayList<Card> hands, ArrayList<Card> board) {
@@ -460,6 +467,7 @@ public class game {
 
     /**
      * Player needs to decide what to do after bot outbid him.
+     *
      * @return true if  checks, false if player passes.
      */
     static boolean roundBotOutbidded(Player player, Bot bot, int outbidAmount) {
@@ -502,10 +510,11 @@ public class game {
     }
 
     /**
-     *Bot needs to decide what to do after player checked.
+     * Bot needs to decide what to do after player checked.
      * Bots level 1 and 2 will always check.
      * Bot level 3 might outbid only if his starting hand was good.
      * Bot level 4 might outbid, it depends on combination of his and board cards.
+     *
      * @return 0 if bot also checks, positive number if it outbids.
      */
     static int round3PlayerChecks(Bot bot, ArrayList<Card> hands, ArrayList<Card> board) {
@@ -551,11 +560,13 @@ public class game {
         return 0;
 
     }
+
     /**
      * Bot needs to decide what to do after player outbid.
      * Bots level 1 and 2 will always check.
      * Bot level 3 might pass if the bid is too high considering his starting hand
      * Bot level 4 checks his and board cards and then makes a decision.
+     *
      * @return true if bot checks, false if bot passes.
      */
     static boolean round3PlayerOutbids(Player player, Bot bot, int outbidAmount, ArrayList<Card> hands, ArrayList<Card> board) {
@@ -645,6 +656,7 @@ public class game {
      * Bots level 1 and 2 will always check.
      * Bot level 3 might outbid, depends on his starting hand. It might also outbid even thought his hand wasn't good (rng).
      * Bot level 4 at this stage is very likely to outbid. He'll always outbid if he has any combinations. Might all in if he has a really strong combination.
+     *
      * @return 0 if bot checks, positive number if outbids.
      */
     static int round4PlayerChecks(Bot bot, ArrayList<Card> hands, ArrayList<Card> board) {
@@ -699,8 +711,8 @@ public class game {
                 boardMoney += outbidAmount;
                 bot.setMoney(bot.getMoney() - outbidAmount);
                 return outbidAmount;
-            }else if (random>5){
-                int outbidAmount = bot.getMoney()/10;
+            } else if (random > 5) {
+                int outbidAmount = bot.getMoney() / 10;
                 System.out.println("\n Bot decided to outbid, he outbids by: " + outbidAmount);
                 boardMoney += outbidAmount;
                 bot.setMoney(bot.getMoney() - outbidAmount);
@@ -716,6 +728,7 @@ public class game {
      * Level 1 and 2 will always check.
      * Level 3 might outbid. It's more likely to outbid your outbid here than ever before because it's late stage of round and it has already put some money on board.
      * Bot level 4 at this stage is very likely to outbid. He'll always outbid if he has any combinations. Might all in if he has a really strong combination.
+     *
      * @return -1 if bot passes, 0 if bot checks, positive number if bot outbids.
      */
     static int round4PlayerOutbids(Player player, Bot bot, int outbidAmount, ArrayList<Card> hands, ArrayList<Card> board) {
@@ -883,7 +896,7 @@ public class game {
 
     //******************* HERE ROUND 4 IS OVER, TIME TO CHECK WHO WON**********************
 
-    static void whoWon(Player player, Bot bot, ArrayList<Card> hands, ArrayList<Card> board){
+    static void whoWon(Player player, Bot bot, ArrayList<Card> hands, ArrayList<Card> board) {
         System.out.println("Betting is over, it's time to check who won");
         int playerStrength = 0;
         int botStrength = 0;
@@ -892,19 +905,22 @@ public class game {
         playerHand.add(hands.get(1));
         playerHand.add(hands.get(3));
         botHand.add(hands.get(0));
-        botHand.add(hands.get(2);
-        playerStrength = Check.finalCheck(playerHand,board);
-        botStrength = Check.finalCheck(botHand,board);
-        if(playerStrength>botStrength){
+        botHand.add(hands.get(2));
+        playerStrength = Check.finalCheck(playerHand, board);
+        botStrength = Check.finalCheck(botHand, board);
+        if (playerStrength > botStrength) {
             System.out.println("Player wins: " + boardMoney + " money.");
-            roundOver(player,bot,0);
+            roundOver(player, bot, 0);
         }
-        if(playerStrength<botStrength){
+        if (playerStrength < botStrength) {
             System.out.println("Bot wins: " + boardMoney + " money.");
             roundOver(player, bot, 1);
         }
+        if (playerStrength == botStrength) {
+            int result = Check.equalHands(player, bot, hands);
+                roundOver(player, bot, result);
+        }
     }
-
 
 
 }
