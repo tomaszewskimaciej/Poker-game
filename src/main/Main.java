@@ -157,8 +157,11 @@ public class Main {
                     }
                 }
             }
-            //HERE THE ROUND IS OVER, BOTH PLAYERS CHECKED TO THE FINAL STAGE, NONE PASSED, NOW WE NEED TO CHECK WHO WHINS
+            //HERE THE ROUND IS OVER, BOTH PLAYERS CHECKED TO THE FINAL STAGE, NONE PASSED, NOW WE NEED TO CHECK WHO WINS
             System.out.println("____________________________________________________________________________________________________");
+            if(round){
+
+            }
         }
 
     }

@@ -291,6 +291,26 @@ public class game {
         return 0;
     }
 
+    /**
+     * It's called when either of players decided to pass.
+     * It gives board money to winning player, set board money to 0 and change all in to false.
+     * @param whoWon 0 if player won, 1 if bot won.
+     */
+    static void roundOver(Player player, Bot bot, int whoWon) {
+        if (whoWon == 0) {
+            System.out.println("Round is over, player wins!");
+            player.setMoney(player.getMoney() + boardMoney);
+            boardMoney = 0;
+            allIn = false;
+        }
+        if (whoWon == 1) {
+            System.out.println("Round is over, bot wins!");
+            bot.setMoney(bot.getMoney()+boardMoney);
+            boardMoney = 0;
+            allIn = false;
+        }
+    }
+
     // **************** FROM HERE ON THERE ARE METHODS FOR ROUND 2 (3 CARDS ON BOARD)*********************************************
 
     /**
@@ -861,27 +881,29 @@ public class game {
         return 0;
     }
 
-    /**
-     * It's called when either of players decided to pass.
-     * It gives board money to winning player, set board money to 0 and change all in to false.
-     * @param whoWon 0 if player won, 1 if bot won.
-     */
-    static void roundOver(Player player, Bot bot, int whoWon) {
-        if (whoWon == 0) {
-            System.out.println("Round is over, player wins!");
-            player.setMoney(player.getMoney() + boardMoney);
-            boardMoney = 0;
-            allIn = false;
+    //******************* HERE ROUND 4 IS OVER, TIME TO CHECK WHO WON**********************
+
+    static void whoWon(Player player, Bot bot, ArrayList<Card> hands, ArrayList<Card> board){
+        System.out.println("Betting is over, it's time to check who won");
+        int playerStrength = 0;
+        int botStrength = 0;
+        ArrayList<Card> playerHand = new ArrayList<>();
+        ArrayList<Card> botHand = new ArrayList<>();
+        playerHand.add(hands.get(1));
+        playerHand.add(hands.get(3));
+        botHand.add(hands.get(0));
+        botHand.add(hands.get(2);
+        playerStrength = Check.finalCheck(playerHand,board);
+        botStrength = Check.finalCheck(botHand,board);
+        if(playerStrength>botStrength){
+            System.out.println("Player wins: " + boardMoney + " money.");
+            roundOver(player,bot,0);
         }
-        if (whoWon == 1) {
-            System.out.println("Round is over, bot wins!");
-            bot.setMoney(bot.getMoney()+boardMoney);
-            boardMoney = 0;
-            allIn = false;
+        if(playerStrength<botStrength){
+            System.out.println("Bot wins: " + boardMoney + " money.");
+            roundOver(player, bot, 1);
         }
     }
-
-
 
 
 
