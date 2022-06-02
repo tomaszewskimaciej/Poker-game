@@ -8,12 +8,24 @@ import java.util.Scanner;
 
 public class game {
     static int money;
+    /**
+     * Bot level.
+     */
     static int difficulty = 4;
     static String name;
     static int whoWon;
+    /**
+     * The amount of money is currently on board.
+     */
     static int boardMoney = 0;
+    /**
+     *Tells whether either of players went all in.
+     */
     static boolean allIn = false;
 
+    /**
+     *this method is used to check whether number given by user is correct
+     */
     static boolean numberChecker(int min, int max, int current) {
         if (current < min || current > max) {
             System.out.println("This number is incorrect.");
@@ -25,6 +37,9 @@ public class game {
         }
     }
 
+    /**
+     *this method is used to show game state, it shows both player balances and cards on board. It's used after each round.
+     */
     static void gameState(Player player, Bot bot, ArrayList<Card> hands, ArrayList<Card> board) {
         System.out.println("\n\nCurrent money on board is: " + boardMoney);
         System.out.println("Your balance: " + player.getMoney());
@@ -53,6 +68,11 @@ public class game {
 //
 //    }
 
+    /**
+     * It's used when player has no money to make a bid/outbid of bot's is too big for player's salary.
+     * It calculates how much money player can bet, makes all in bet for him, returns "extra" money to bot.
+     * @return - returns how much money player bet
+     */
     static int playerHasNoEnoughMoney(Player player, Bot bot, int outbidAmount) {
         System.out.println("Outbid amount is greater than player's account. Player plays goes all in.");
         int restOFmoney = outbidAmount - player.getMoney();
@@ -63,6 +83,11 @@ public class game {
         return restOFmoney;
     }
 
+    /**
+     * It's used when bot has no money to make a bid/outbid of player's is too big for bot's salary.
+     * It calculates how much money bot can bet, makes all in bet for him, returns "extra" money to player.
+     * @return - returns how much money bot bet
+     */
     static int botHasNoEnoughMoney(Player player, Bot bot, int amount) {
         System.out.println("Outbid amount is greater than bot's account. Bot plays goes all in.");
         int restOFmoney = amount - bot.getMoney();
@@ -73,7 +98,9 @@ public class game {
         return restOFmoney;
     }
 
-
+    /**
+     * Used to start the game. Here you set the starting money, difficulty level.
+     */
     static void startGame() {
         Scanner scan = new Scanner(System.in);
         System.out.println("Welcome to Poker game");
@@ -90,7 +117,9 @@ public class game {
         System.out.println("Thank you. Please remember that there's small and big hand, small one is 5% of starting amount and big one is 10% of starting money.");
     }
 
-
+    /**
+     * First clears the deck and then puts 52 cards into it.
+     */
     static void putCardsInDeck(ArrayList<Card> deck) {
         deck.removeAll(deck);
         for (int i = 0; i < 4; i++) {
@@ -100,10 +129,16 @@ public class game {
         }
     }
 
+    /**
+     * Shuffles deck, used right after putting cards in deck.
+     */
     static void shuffleDeck(ArrayList<Card> deck) {
         Collections.shuffle(deck);
     }
 
+    /**
+     * Deals cards to players.
+     */
     static void dealCards(ArrayList<Card> deck, ArrayList<Card> hands) {
         hands.removeAll(hands);
         for (int i = 0; i < 4; i++) {                     //adding cards to hands
@@ -112,6 +147,9 @@ public class game {
         }
     }
 
+    /**
+     * It's used to put cards on board.
+     */
     static void putCardsOnBoard(int amountOfCards, ArrayList<Card> board, ArrayList<Card> deck) {
         for (int i = 0; i < amountOfCards; i++) {
             board.add(deck.get(0));
@@ -119,6 +157,9 @@ public class game {
         }
     }
 
+    /**
+     * Shows player its hand.
+     */
     static void myHand(ArrayList<Card> hands) {
         System.out.println("\nYour hand:");
         System.out.println(hands.get(1));
@@ -127,6 +168,9 @@ public class game {
 
     }
 
+    /**
+     * Shows board cards.
+     */
     static void boardCards(ArrayList<Card> board) {
         System.out.println("\nBoard cards: ");
         for (int a = 0; a < board.size(); a++) {
@@ -135,6 +179,9 @@ public class game {
         }
     }
 
+    /**
+     *Shows bot's cards. Avaiable only at difficulty 1.
+     */
     static void checkBotCards(ArrayList<Card> hands) {
         System.out.println("You chose difficulty 1. These are bot's cards: ");
         System.out.println("Bot's hand:");
@@ -143,6 +190,13 @@ public class game {
         System.out.println("\n");
     }
 
+    /**
+     * It's called right after dealing cards to players, at the beggining of round.
+     * It takes big hand money from player/bot.
+     * @param order - it's int, if it's 1 then player has big hand, 0 mean bot has smallhand.
+     * @param bigHand - 10 % of starting money
+     * @param smallHand - 5 % of starting money
+     */
     static void afterDealing(int order, int bigHand, int smallHand, Player player, Bot bot) {
         System.out.println("\nCards were dealt. It's time to play.\n");
         if (order == 1) {
@@ -158,6 +212,10 @@ public class game {
         }
     }
 
+    /**
+     * It's called when bot has small hand. Bot needs to decide whether to check (pay difference between big and small hand) or pass.
+     * @return - 0 if bot checks, -1 if bot passes
+     */
     static int botSmallHand(Bot bot, ArrayList<Card> hands, int bigHand, int smallHand) {
         Random rand = new Random();
         if (difficulty == 1 || difficulty == 2) {
@@ -203,7 +261,10 @@ public class game {
         return 0;
     }
 
-
+    /**
+     * It's called when player has small hand. Player needs to decide whether to check (pay difference between big and small hand) or pass.
+     * @return - 0 if player checks, -1 if player passes
+     */
     static int playerSmallHand(Player player, int bigHand, int smallHand) {
         System.out.println("You have small hand, I've already taken small hand amount from your account.");
         System.out.println("It's time to decide whether you wanna play or pass.");
@@ -232,13 +293,19 @@ public class game {
 
     // **************** FROM HERE ON THERE ARE METHODS FOR ROUND 2 (3 CARDS ON BOARD)*********************************************
 
+    /**
+     * Puts cards on board and show them to players.
+     */
     static void round2(ArrayList<Card> board, ArrayList<Card> deck) {
         putCardsOnBoard(3, board, deck);
         System.out.println("Cards were put on board, here they are: ");
         System.out.println(board.get(0) + ", " + board.get(1) + ", " + board.get(2) + "\n");
     }
 
-
+    /**
+     * Player needs to decide what to do. He can either check or outbid.
+     * @return 0 if player checks, positive number if player outbids (this number is equal to the amount of outbid).
+     */
     static int roundPlay(Player player, Bot bot) {
         System.out.println("You need to decide what you wanna do, you can check or outbid.");
         System.out.println("Press 1 to check, 2 to outbid");
@@ -268,6 +335,11 @@ public class game {
         return 0;
     }
 
+    /**
+     * Bot needs to decide what to do after player checked.
+     * Only bot level 4 might outbid. He might do this only if his hand have a pretty good (considering that it's an early stage of round) combination with board cards.
+     * @return 0 if bot checks, positive number if bot outbids (this number is equal to the amount of outbid).
+     */
     static int round2PlayerChecks(Bot bot, ArrayList<Card> hands, ArrayList<Card> board) {
         Random rand = new Random();
         if (difficulty == 4) {
@@ -289,6 +361,13 @@ public class game {
         }
     }
 
+    /**
+     * Bot needs to decide what to do after player outbid.
+     * Bots level 1 and 2 will always check.
+     * Bot level 3 decision depends on his starting hand and how big the outbid is.
+     * Bot level 4 decision depends on: first his starting hand (as it's still an early stage of the round) and then of combination of his and board cards.
+     * @return true if bot checks, false if bot passes.
+     */
     static boolean round2PlayerOutbids(Player player, Bot bot, int outbidAmount, ArrayList<Card> hands, ArrayList<Card> board) {
         int whatBotDoes = 1;
         Random rand = new Random();
@@ -359,6 +438,10 @@ public class game {
         return true;
     }
 
+    /**
+     * Player needs to decide what to do after bot outbid him.
+     * @return true if  checks, false if player passes.
+     */
     static boolean roundBotOutbidded(Player player, Bot bot, int outbidAmount) {
         System.out.println("\nBot decided to outbid you by: " + outbidAmount + ". You need to decide whether to check or pass");
         System.out.println("Press 1 to check or press 2 to pass");
@@ -387,14 +470,24 @@ public class game {
         return true;
     }
 
-    //******************* HERE ROUND 2 IS OVER, TIME FOR ROUND 3(5th CARD ON BOARD, ANOTHER BETTING TIME)**********************
+    //******************* HERE ROUND 2 IS OVER, TIME FOR ROUND 3(4th CARD ON BOARD, ANOTHER BETTING TIME)**********************
+
+    /**
+     * Puts 4th card on board.
+     */
     static void round3(ArrayList<Card> board, ArrayList<Card> deck) {
         putCardsOnBoard(1, board, deck);
         System.out.println("4th card was put on board, cards on board are: ");
         System.out.println(board.get(0) + ", " + board.get(1) + ", " + board.get(2) + ", " + board.get(3) + "\n");
     }
 
-
+    /**
+     *Bot needs to decide what to do after player checked.
+     * Bots level 1 and 2 will always check.
+     * Bot level 3 might outbid only if his starting hand was good.
+     * Bot level 4 might outbid, it depends on combination of his and board cards.
+     * @return 0 if bot also checks, positive number if it outbids.
+     */
     static int round3PlayerChecks(Bot bot, ArrayList<Card> hands, ArrayList<Card> board) {
         int botDecision = 1;
         if (difficulty == 4) {
@@ -438,8 +531,13 @@ public class game {
         return 0;
 
     }
-
-    //difference between this method and round2playeroutbids is that this is the first time where level4 bot compares his and board cards to make a decision
+    /**
+     * Bot needs to decide what to do after player outbid.
+     * Bots level 1 and 2 will always check.
+     * Bot level 3 might pass if the bid is too high considering his starting hand
+     * Bot level 4 checks his and board cards and then makes a decision.
+     * @return true if bot checks, false if bot passes.
+     */
     static boolean round3PlayerOutbids(Player player, Bot bot, int outbidAmount, ArrayList<Card> hands, ArrayList<Card> board) {
         int whatBotDoes = 1;
         Random rand = new Random();
@@ -513,14 +611,26 @@ public class game {
 
     //******************* HERE ROUND 3 IS OVER, TIME FOR ROUND 4(5th CARD ON BOARD, ANOTHER BETTING TIME)**********************
 
+    /**
+     * Puts last card on board
+     */
     static void round4(ArrayList<Card> board, ArrayList<Card> deck) {
         putCardsOnBoard(1, board, deck);
         System.out.println("5th card was put on board, cards on board are: ");
         System.out.println(board.get(0) + ", " + board.get(1) + ", " + board.get(2) + ", " + board.get(3) + " " + board.get(4) + "\n");
     }
 
+    /**
+     * Bot needs to decide what to do after player checked.
+     * Bots level 1 and 2 will always check.
+     * Bot level 3 might outbid, depends on his starting hand. It might also outbid even thought his hand wasn't good (rng).
+     * Bot level 4 at this stage is very likely to outbid. He'll always outbid if he has any combinations. Might all in if he has a really strong combination.
+     * @return 0 if bot checks, positive number if outbids.
+     */
     static int round4PlayerChecks(Bot bot, ArrayList<Card> hands, ArrayList<Card> board) {
         int botDecision = 1;
+        Random rand = new Random();
+        int random = rand.nextInt(10);
         if (difficulty == 4) {
             int decide = Check.finalCheck(hands, board);
             if (decide >= 9) {
@@ -531,28 +641,28 @@ public class game {
                 allIn = true;
                 return outbidAmount;
             }
-            if (decide < 9 && decide >= 7) {
+            if (decide >= 7) {
                 int outbidAmount = bot.getMoney() / 2;
                 System.out.println("\n Bot decided to outbid by: " + outbidAmount + ".\n");
                 bot.setMoney(bot.getMoney() - outbidAmount);
                 boardMoney += outbidAmount;
                 return outbidAmount;
             }
-            if (decide < 7 && decide >= 5) {
+            if (decide >= 5) {
                 int outbidAmount = bot.getMoney() / 4;
                 System.out.println("\n Bot decided to outbid by: " + outbidAmount + ".\n");
                 bot.setMoney(bot.getMoney() - outbidAmount);
                 boardMoney += outbidAmount;
                 return outbidAmount;
             }
-            if (decide < 5 && decide >= 4) {
+            if (decide >= 4) {
                 int outbidAmount = bot.getMoney() / 6;
                 System.out.println("\nBot decided to outbid, he outbids by: " + outbidAmount);
                 bot.setMoney(bot.getMoney() - outbidAmount);
                 boardMoney += outbidAmount;
                 return outbidAmount;
             }
-            if (decide < 4 && decide >= 2) {
+            if (decide >= 2) {
                 int outbidAmount = bot.getMoney() / 8;
                 System.out.println("\nBot decided to outbid, he outbids by: " + outbidAmount);
                 bot.setMoney(bot.getMoney() - outbidAmount);
@@ -569,15 +679,25 @@ public class game {
                 boardMoney += outbidAmount;
                 bot.setMoney(bot.getMoney() - outbidAmount);
                 return outbidAmount;
+            }else if (random>5){
+                int outbidAmount = bot.getMoney()/10;
+                System.out.println("\n Bot decided to outbid, he outbids by: " + outbidAmount);
+                boardMoney += outbidAmount;
+                bot.setMoney(bot.getMoney() - outbidAmount);
+                return outbidAmount;
             }
-            System.out.println("\nBot also checks.");
-            return 0;
         }
         System.out.println("\nBot also checks.");
         return 0;
     }
 
-
+    /**
+     * Bot needs to decide what to do after player outbid.
+     * Level 1 and 2 will always check.
+     * Level 3 might outbid. It's more likely to outbid your outbid here than ever before because it's late stage of round and it has already put some money on board.
+     * Bot level 4 at this stage is very likely to outbid. He'll always outbid if he has any combinations. Might all in if he has a really strong combination.
+     * @return -1 if bot passes, 0 if bot checks, positive number if bot outbids.
+     */
     static int round4PlayerOutbids(Player player, Bot bot, int outbidAmount, ArrayList<Card> hands, ArrayList<Card> board) {
         int whatBotDoes = 1;
         Random rand = new Random();
@@ -637,7 +757,6 @@ public class game {
                         botHasNoEnoughMoney(player, bot, outbidAmount);
                         return 0;
                     }
-
                 }
                 if (random >= 8) {
                     System.out.println("\nBot decided to pass, round is now over.");
@@ -647,7 +766,6 @@ public class game {
         }
         if (difficulty == 4) {
             int check = Check.finalCheck(board, hands);
-
             if (check >= 9) {
                 if (bot.canBotPay(outbidAmount)) {
                     System.out.println("Bot decided to outbid your bet. He goes allin.");
@@ -665,7 +783,7 @@ public class game {
                 if (bot.canBotPay(outbidAmount)) {
                     System.out.println("Bot decided to outbid your bet.");
                     bot.setMoney(bot.getMoney() - outbidAmount);
-                    outbidAmount = bot.getMoney()/2;
+                    outbidAmount = bot.getMoney() / 2;
                     boardMoney += outbidAmount;
                     return outbidAmount;
                 } else {
@@ -674,44 +792,97 @@ public class game {
                 }
             }
 
+            if (check >= 5) {
+                if (bot.canBotPay(outbidAmount)) {
+                    System.out.println("Bot decided to outbid your bet.");
+                    bot.setMoney(bot.getMoney() - outbidAmount);
+                    outbidAmount = bot.getMoney() / 4;
+                    boardMoney += outbidAmount;
+                    return outbidAmount;
+                } else {
+                    botHasNoEnoughMoney(player, bot, outbidAmount);
+                    return 0;
+                }
+            }
+
+            if (check >= 3) {
+                if (bot.canBotPay(outbidAmount)) {
+                    System.out.println("Bot decided to outbid your bet.");
+                    bot.setMoney(bot.getMoney() - outbidAmount);
+                    outbidAmount = bot.getMoney() / 8;
+                    boardMoney += outbidAmount;
+                    return outbidAmount;
+                } else {
+                    botHasNoEnoughMoney(player, bot, outbidAmount);
+                    return 0;
+                }
+            }
+
+            if (check >= 2) {
+                if (bot.canBotPay(outbidAmount)) {
+                    System.out.println("Bot decided to outbid your bet.");
+                    bot.setMoney(bot.getMoney() - outbidAmount);
+                    outbidAmount = bot.getMoney() / 10;
+                    boardMoney += outbidAmount;
+                    return outbidAmount;
+                } else {
+                    botHasNoEnoughMoney(player, bot, outbidAmount);
+                    return 0;
+                }
+            }
 
             if (bot.getMoney() / 2 < outbidAmount) {
-                System.out.println("\nBot decided to pass, round is now over.");
-                return false;
+                if (check < 7) {
+                    System.out.println("\nBot decided to pass, round is now over.");
+                    return -1;
+                }
             }
             if (bot.getMoney() / 2 >= outbidAmount && bot.getMoney() / 4 < outbidAmount) {
-                if (check <= 5) {
+                if (check < 5) {
                     System.out.println("\nBot decided to pass, round is now over.");
-                    return false;
+                    return -1;
                 }
             }
             if (bot.getMoney() / 4 >= outbidAmount && bot.getMoney() / 6 < outbidAmount) {
-                if (check <= 4) {
+                if (check < 4) {
                     System.out.println("\nBot decided to pass, round is now over.");
-                    return false;
-                }
-            }
-            if (bot.getMoney() / 5 >= outbidAmount && bot.getMoney() / 10 < outbidAmount) {
-                if (random <= 3) {
-                    System.out.println("\nBot decided to pass, round is now over.");
-                    return false;
+                    return -1;
                 }
             }
         }
 
-
-        if (whatBotDoes == 1) {
-            System.out.println("\nBot decided to check.");
-            if (bot.canBotPay(outbidAmount)) {
-                bot.setMoney(bot.getMoney() - outbidAmount);
-                boardMoney += outbidAmount;
-            } else {
-                botHasNoEnoughMoney(player, bot, outbidAmount);
-                return 0;
-            }
-            return true;
+        System.out.println("\nBot decided to check.");
+        if (bot.canBotPay(outbidAmount)) {
+            bot.setMoney(bot.getMoney() - outbidAmount);
+            boardMoney += outbidAmount;
+        } else {
+            botHasNoEnoughMoney(player, bot, outbidAmount);
         }
-        return true;
+        return 0;
     }
+
+    /**
+     * It's called when either of players decided to pass.
+     * It gives board money to winning player, set board money to 0 and change all in to false.
+     * @param whoWon 0 if player won, 1 if bot won.
+     */
+    static void roundOver(Player player, Bot bot, int whoWon) {
+        if (whoWon == 0) {
+            System.out.println("Round is over, player wins!");
+            player.setMoney(player.getMoney() + boardMoney);
+            boardMoney = 0;
+            allIn = false;
+        }
+        if (whoWon == 1) {
+            System.out.println("Round is over, bot wins!");
+            bot.setMoney(bot.getMoney()+boardMoney);
+            boardMoney = 0;
+            allIn = false;
+        }
+    }
+
+
+
+
 
 }

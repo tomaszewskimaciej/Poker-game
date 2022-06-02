@@ -112,8 +112,7 @@ public class Main {
                     if (decision != 0) {
                         if (!game.roundBotOutbidded(player, bot, decision)) {
                             round = false;
-                            bot.setMoney(bot.getMoney() + game.boardMoney);
-                            game.boardMoney = 0;
+                            game.roundOver(player, bot, 1);
                         } else {
                             System.out.println("Both players checked, it's time for 4rd card.");
                         }
@@ -122,8 +121,7 @@ public class Main {
                     //if we here it means that player outbidded and bot needs to decide whether to check or pass
                     round = game.round3PlayerOutbids(player, bot, playerDecision, handsCards, boardCards);
                     if (!round) {
-                        player.setMoney(player.getMoney() + game.boardMoney);
-                        game.boardMoney = 0;
+                        game.roundOver(player, bot, 0);
                     }
                 }
             }
@@ -148,7 +146,11 @@ public class Main {
                         }
                     }
                 } else {                                                                                                  //if player outbided here we go:
-                    round = game.round4PlayerOutbids(player, bot, playerDecision, handsCards, boardCards);
+                    int decision = game.round4PlayerOutbids(player, bot, playerDecision, handsCards, boardCards);
+                    if(decision==-1){
+                        round=false;
+                        game.roundOver(player, bot, 1);
+                    }
                     if (!round) {
                         player.setMoney(player.getMoney() + game.boardMoney);
                         game.boardMoney = 0;
