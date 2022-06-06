@@ -4,6 +4,12 @@ import java.util.*;
 import java.lang.*;
 
 public class Check {
+    /**
+     * This method checks if starting hand is strong.
+     * hands he considers as good are pairs; 2 high value cards, where he considers 10 as the first high value card; 2 cards of the same suit. Compares his cards to board cards.
+     *
+     * @return true if it's strong., false if it's weak.
+     */
     static boolean diff3StartCheck(ArrayList<Card> hands) {
         if (hands.get(0).getRank() > 8 && hands.get(2).getRank() > 8) {
             return true;
@@ -27,6 +33,11 @@ public class Check {
         return false;
     }
 
+    /**
+     * This method is used to check "value" of each player's combination
+     *
+     * @return int value - it's value depends on combination strength, where strongest (royal flush) is worth 10, and weakest combination (pair) is worth 2
+     */
     static int finalCheck(ArrayList<Card> hands, ArrayList<Card> board) {
         ArrayList<Card> checkIt = new ArrayList<>();
         // so this is where we are checking player's/bot's hands
@@ -184,7 +195,7 @@ public class Check {
 
     static int straight(ArrayList<Card> checkIt, ArrayList<Card> uniqueCards) {
         int straightLength = 0;
-        for (int a = 1; a < uniqueCards.size(); a++) {
+        for (int a = 1; a < uniqueCards.size() - 1; a++) {
             if (uniqueCards.get(a).getRank() == uniqueCards.get(a + 1).getRank() - 1) {
                 straightLength += 1;
                 if (straightLength >= 4) {

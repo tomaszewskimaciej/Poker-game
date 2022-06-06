@@ -57,7 +57,6 @@ public class game {
     }
 
 
-
     /**
      * It's used when player has no money to make a bid/outbid of bot's is too big for player's salary.
      * It calculates how much money player can bet, makes all in bet for him, returns "extra" money to bot.
@@ -252,6 +251,9 @@ public class game {
                 }
             }
         }
+        System.out.println("Bot decided to play, so I take difference between small and big hand from his account.");
+        bot.setMoney(bot.getMoney() - (bigHand - smallHand));
+        boardMoney += smallHand;
         return 0;
     }
 
@@ -305,13 +307,13 @@ public class game {
             boardMoney = 0;
             allIn = false;
         }
-        if(whoWon==3){
+        if (whoWon == 3) {
             System.out.println("Both players combinations are equal, so are their strongest cards.");
             System.out.println("This is very rare event but it's a draw");
-            player.setMoney(player.getMoney()+boardMoney/2);
-            bot.setMoney(bot.getMoney()+boardMoney/2);
-            boardMoney=0;
-            allIn=false;
+            player.setMoney(player.getMoney() + boardMoney / 2);
+            bot.setMoney(bot.getMoney() + boardMoney / 2);
+            boardMoney = 0;
+            allIn = false;
         }
     }
 
@@ -470,7 +472,7 @@ public class game {
      *
      * @return true if  checks, false if player passes.
      */
-    static boolean roundBotOutbidded(Player player, Bot bot, int outbidAmount) {
+    static boolean roundBotOutbid(Player player, Bot bot, int outbidAmount) {
         System.out.println("\nBot decided to outbid you by: " + outbidAmount + ". You need to decide whether to check or pass");
         System.out.println("Press 1 to check or press 2 to pass");
         int choice;
@@ -770,6 +772,7 @@ public class game {
                         boardMoney += outbidAmount;
                         return outbidAmount;
                     } else {
+                        System.out.println("Bot checks.");
                         botHasNoEnoughMoney(player, bot, outbidAmount);
                         return 0;
                     }
@@ -787,6 +790,7 @@ public class game {
                         boardMoney += outbidAmount;
                         return outbidAmount;
                     } else {
+                        System.out.println("Bot checks.");
                         botHasNoEnoughMoney(player, bot, outbidAmount);
                         return 0;
                     }
@@ -808,6 +812,7 @@ public class game {
                     allIn = true;
                     return outbidAmount;
                 } else {
+                    System.out.println("Bot checks.");
                     botHasNoEnoughMoney(player, bot, outbidAmount);
                     return 0;
                 }
@@ -820,6 +825,7 @@ public class game {
                     boardMoney += outbidAmount;
                     return outbidAmount;
                 } else {
+                    System.out.println("Bot checks.");
                     botHasNoEnoughMoney(player, bot, outbidAmount);
                     return 0;
                 }
@@ -833,6 +839,7 @@ public class game {
                     boardMoney += outbidAmount;
                     return outbidAmount;
                 } else {
+                    System.out.println("Bot checks.");
                     botHasNoEnoughMoney(player, bot, outbidAmount);
                     return 0;
                 }
@@ -846,6 +853,7 @@ public class game {
                     boardMoney += outbidAmount;
                     return outbidAmount;
                 } else {
+                    System.out.println("Bot checks.");
                     botHasNoEnoughMoney(player, bot, outbidAmount);
                     return 0;
                 }
@@ -859,6 +867,7 @@ public class game {
                     boardMoney += outbidAmount;
                     return outbidAmount;
                 } else {
+                    System.out.println("Bot checks.");
                     botHasNoEnoughMoney(player, bot, outbidAmount);
                     return 0;
                 }
@@ -896,6 +905,9 @@ public class game {
 
     //******************* HERE ROUND 4 IS OVER, TIME TO CHECK WHO WON**********************
 
+    /**
+     * It's used to declare the winner of round.
+     */
     static void whoWon(Player player, Bot bot, ArrayList<Card> hands, ArrayList<Card> board) {
         System.out.println("Betting is over, it's time to check who won");
         int playerStrength = 0;
@@ -908,6 +920,13 @@ public class game {
         botHand.add(hands.get(2));
         playerStrength = Check.finalCheck(playerHand, board);
         botStrength = Check.finalCheck(botHand, board);
+        System.out.println("These are player's cards:");
+        System.out.println(hands.get(1));
+        System.out.println(hands.get(3));
+        System.out.println("These are bot's cards");
+        System.out.println(hands.get(0));
+        System.out.println(hands.get(2));
+
         if (playerStrength > botStrength) {
             System.out.println("Player wins: " + boardMoney + " money.");
             roundOver(player, bot, 0);
@@ -918,9 +937,20 @@ public class game {
         }
         if (playerStrength == botStrength) {
             int result = Check.equalHands(player, bot, hands);
-                roundOver(player, bot, result);
+            roundOver(player, bot, result);
         }
     }
 
+    static boolean ifGameISon(Player player, Bot bot, int bigHand) {
 
+        if (player.getMoney() < bigHand) {
+            System.out.println("Game is over. Bot wins the game.");
+            return false;
+        }
+        if (bot.getMoney() < bigHand) {
+            System.out.println("Game is over. Players wins the game.");
+            return false;
+        }
+        return true;
+    }
 }

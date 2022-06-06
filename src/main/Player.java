@@ -17,10 +17,15 @@ public class Player {
         return money;
     }
 
-    public boolean  canPlayerPay(int amount){
-        if(amount>money){
+    /**
+     * This method is used to check whether player is able to pay "x" money.
+     *
+     * @return true if player can pay, false if cannot.
+     */
+    public boolean canPlayerPay(int amount) {
+        if (amount > money) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }

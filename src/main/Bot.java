@@ -19,10 +19,16 @@ public class Bot {
         return money;
     }
 
-    public boolean canBotPay(int amount){
-        if(amount>money){
+    /**
+     * This method is used to check whether bot is able to pay "x" money.
+     *
+     * @return true if bot can pay, false if cannot.
+     */
+
+    public boolean canBotPay(int amount) {
+        if (amount > money) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
@@ -36,7 +42,7 @@ public class Bot {
         TODO Level 4: This one could be able to check its own cards and player's card and then calculate its chance to win, using math algorithm.
 
         Outbiding after 2 first card is not allowed, bots never pass after first 2cards.
-        Game is over when either of players has no money left or when either of players have no money for small/bighand.
+        Game is over when either of players has no money left or when either of players have no money for bighand.
 
      */
 }
