@@ -1,6 +1,6 @@
 # Poker game
 
-About
+### About
 
 This is a console version of a poker game. It’s played 1 v 1 against a bot, you can choose from 4 different bot levels (You can read more about differences between each bot level in the bot section).
 
