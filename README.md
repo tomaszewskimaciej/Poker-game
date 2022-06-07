@@ -18,7 +18,7 @@ After stage 4: cards and combinations are compared and the winner is announced.
 
 ### Bots
 
-There are 4 bot levels, where level 1 is the weakest one.     
+There are 4 bot levels, where level 1 is the weakest one.\     
 Level 1: You are allowed to see bot’s cards. It’ll never pass or outbid the player.  
 Level 2: It’ll never pass or outbid the player.
 Level 3: He’s able to analyze the starting hand (only the first 2 cards), you can read about the starting hand it considers as good below. It might outbid the player if his starting hand was good and might pass if the player bids too much.  
